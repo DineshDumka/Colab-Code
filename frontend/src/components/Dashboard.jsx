@@ -11,6 +11,7 @@ export const Dashboard = ({ user, onLogout }) => {
     const [agenda, setAgenda] = useState('');
     const [openFaqs, setOpenFaqs] = useState([]);
     const [error, setError] = useState('');
+    const [showGuestForm, setShowGuestForm] = useState(false);
 
     const faqs = [
         {
@@ -193,19 +194,69 @@ export const Dashboard = ({ user, onLogout }) => {
                         {/* Decorative background glow */}
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-violet-600/15 rounded-full blur-[100px] pointer-events-none -z-10" />
 
-                        <div className="glass-card p-8 md:p-10 border border-white/10 bg-[#05030a]/80 shadow-2xl relative z-10 overflow-hidden">
-                            {/* Decorative top reflection line */}
-                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-400/30 to-transparent"></div>
+                        {(!user && !showGuestForm) ? (
+                            <div className="glass-card p-8 md:p-10 border border-white/10 bg-[#05030a]/80 shadow-2xl relative z-10 overflow-hidden flex flex-col items-center text-center">
+                                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-400/30 to-transparent"></div>
+                                <div className="w-16 h-16 rounded-full bg-violet-500/10 flex flex-col items-center justify-center mb-6 text-violet-400 border border-violet-500/20 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
+                                    <Lock size={28} />
+                                </div>
+                                <h2 className="text-3xl font-bold mb-3 tracking-tight">Access Colab-Code</h2>
+                                <p className="text-white/50 text-base leading-relaxed mb-8 max-w-sm">
+                                    Sign in to save your sessions and invite collaborators, or jump right in as a guest.
+                                </p>
 
-                            <div className="mb-8">
-                                <h2 className="text-2xl font-bold mb-2">Initialize Workspace</h2>
-                                <p className="text-white/50 text-sm">Secure, ephemeral environments.</p>
-                                {error && (
-                                    <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                                        {error}
-                                    </div>
-                                )}
+                                <div className="w-full flex gap-4">
+                                    <button
+                                        onClick={() => navigate('/signin')}
+                                        className="btn-primary flex-1 flex items-center justify-center gap-2"
+                                    >
+                                        Log In
+                                    </button>
+                                    <button
+                                        onClick={() => navigate('/signup')}
+                                        className="flex-1 flex items-center justify-center gap-2 text-white border border-white/10 bg-white/5 hover:bg-white/10 rounded-lg transition-all font-medium"
+                                    >
+                                        Sign Up
+                                    </button>
+                                </div>
+
+                                <div className="w-full flex items-center gap-4 my-8">
+                                    <div className="h-px flex-1 bg-white/10"></div>
+                                    <span className="text-xs text-white/30 font-bold uppercase tracking-widest">Or test it out</span>
+                                    <div className="h-px flex-1 bg-white/10"></div>
+                                </div>
+
+                                <button
+                                    onClick={() => setShowGuestForm(true)}
+                                    className="w-full flex items-center justify-center gap-2 text-white/50 hover:text-white transition-colors py-2"
+                                >
+                                    <Zap size={18} />
+                                    Continue as Guest
+                                    <ChevronRight size={16} />
+                                </button>
                             </div>
+                        ) : (
+                            <div className="glass-card p-8 md:p-10 border border-white/10 bg-[#05030a]/80 shadow-2xl relative z-10 overflow-hidden">
+                                {/* Decorative top reflection line */}
+                                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-400/30 to-transparent"></div>
+
+                                <div className="mb-8 relative">
+                                    {!user && showGuestForm && (
+                                        <button 
+                                            onClick={() => setShowGuestForm(false)}
+                                            className="absolute right-0 top-0 text-xs text-white/40 hover:text-white underline underline-offset-2"
+                                        >
+                                            Back to Login
+                                        </button>
+                                    )}
+                                    <h2 className="text-2xl font-bold mb-2">Initialize Workspace</h2>
+                                    <p className="text-white/50 text-sm">Secure, ephemeral environments.</p>
+                                    {error && (
+                                        <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                                            {error}
+                                        </div>
+                                    )}
+                                </div>
 
                             <form onSubmit={handleStartSession} className="space-y-5">
 
@@ -291,6 +342,7 @@ export const Dashboard = ({ user, onLogout }) => {
 
                             </form>
                         </div>
+                        )}
                     </div>
                 </div>
             </main>
