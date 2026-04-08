@@ -9,6 +9,9 @@ const signinRouter = require('./authenticate/Signin');
 const sessionRouter = require('./session/session');
 const editorRouter = require('./session/editor');
 const Room = require('./models/Room');
+const { GoogleGenAI } = require('@google/genai');
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -90,6 +93,28 @@ app.post('/run', async (req, res) => {
     }
 });
 
+// ─── AI Chat Integration ────────────────────────────────────────────────────
+app.post('/ai/chat', async (req, res) => {
+    const { prompt, language, codeContext } = req.body;
+    if (!prompt) return res.status(400).json({ error: 'Prompt required' });
+
+    try {
+        const fullPrompt = `You are an expert AI pair programming assistant working in a realtime collaborative editor called Colab-Code.
+${codeContext && codeContext.trim() !== '' ? `Here is the current code in the editor (${language}):\n\`\`\`${language}\n${codeContext}\n\`\`\`\n` : ''}
+User asks: ${prompt}`;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: fullPrompt,
+        });
+
+        return res.json({ text: response.text });
+    } catch (err) {
+        console.error('AI Error:', err);
+        return res.status(500).json({ error: 'AI Assistant unavailable. Check API keys.' });
+    }
+});
+
 
 // roomState[roomId] = { code: string, users: [{ socketId, displayName, username }] }
 const roomState = {};
@@ -159,6 +184,18 @@ io.on('connection', (socket) => {
         handleLeave(socket, roomId);
     });
 
+    // ─── WebRTC Signaling ────────────────────────────────────────────────────
+    socket.on('webrtc-offer', ({ roomId, offer, toSocketId }) => {
+        socket.to(toSocketId).emit('webrtc-offer', { offer, fromSocketId: socket.id });
+    });
+    
+    socket.on('webrtc-answer', ({ roomId, answer, toSocketId }) => {
+        socket.to(toSocketId).emit('webrtc-answer', { answer, fromSocketId: socket.id });
+    });
+    
+    socket.on('webrtc-ice-candidate', ({ roomId, candidate, toSocketId }) => {
+        socket.to(toSocketId).emit('webrtc-ice-candidate', { candidate, fromSocketId: socket.id });
+    });
 
     socket.on('disconnect', () => {
         const roomId = socket.data.roomId;

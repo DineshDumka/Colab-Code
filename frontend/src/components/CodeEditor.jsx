@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Editor from "@monaco-editor/react";
-import { Copy, Play, Check, Zap, Save } from "lucide-react";
+import { Copy, Play, Check, Zap, Save, Download, Sparkles, Video, Loader2 } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { AIAssistant } from './AIAssistant';
+import { VideoOverlay } from './VideoOverlay';
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
@@ -17,6 +19,9 @@ function CodeEditor() {
     const [copied, setCopied] = useState(false);
     const [users, setUsers] = useState([]);
     const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved' | 'autosaved'
+    const [editorValue, setEditorValue] = useState("");
+    const [showAI, setShowAI] = useState(false);
+    const [showVideo, setShowVideo] = useState(false);
 
     const [sidebarWidth, setSidebarWidth] = useState(256);
     const [consoleHeight, setConsoleHeight] = useState(256);
@@ -26,6 +31,7 @@ function CodeEditor() {
     const isDraggingConsole = useRef(false);
     const socketRef = useRef(null);
     const isRemoteChange = useRef(false);
+    const editorRef = useRef(null);
 
     // ── Socket.IO Setup ─────────────────────────────────────────────────────
     useEffect(() => {
@@ -52,9 +58,12 @@ function CodeEditor() {
         });
 
         // Receive keystroke-level changes from other users
-        socket.on("code-change", ({ code: newCode }) => {
-            isRemoteChange.current = true;
-            setCode(newCode);
+        socket.on('code-change', ({ code: newCode }) => {
+            if (newCode !== editorRef.current?.getValue()) {
+                isRemoteChange.current = true;
+                setEditorValue(newCode);
+                editorRef.current?.setValue(newCode);
+            }
         });
 
         // Live users list updates (join / leave)
@@ -81,6 +90,7 @@ function CodeEditor() {
                 if (typeof res.data?.sourceCode === "string" && res.data.sourceCode.length > 0) {
                     isRemoteChange.current = true;
                     setCode(res.data.sourceCode);
+                    setEditorValue(res.data.sourceCode);
                 }
             } catch (error) {
                 console.error("Failed to fetch session data:", error);
@@ -95,9 +105,11 @@ function CodeEditor() {
             //  change came from the server — reset flag, don't re-emit
             isRemoteChange.current = false;
             setCode(value || "");
+            setEditorValue(value || "");
             return;
         }
         setCode(value || "");
+        setEditorValue(value || "");
         socketRef.current?.emit("code-change", { roomId, code: value || "" });
     }, [roomId]);
 
@@ -148,6 +160,14 @@ function CodeEditor() {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleDownload = () => {
+        const blob = new Blob([code], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `code-${roomId}.${language === 'python' ? 'py' : 'js'}`;
+        a.click();
+    };
 
     const [isRunning, setIsRunning] = useState(false);
 
@@ -228,7 +248,7 @@ function CodeEditor() {
             >
                 {/* Logo */}
                 <div className="p-6 border-b border-white/10 flex items-center gap-2 shrink-0">
-                    <div className="text-violet-500 font-mono text-xl font-bold mt-1">&lt;/&gt;</div>
+                    <div className="text-emerald-500 font-mono text-xl font-bold mt-1">&lt;/&gt;</div>
                     <span className="text-xl font-bold tracking-tight text-white">CollabCode</span>
                 </div>
 
@@ -259,7 +279,7 @@ function CodeEditor() {
                             users.map((user, index) => (
                                 <div key={index} className="flex items-center gap-3">
                                     <div className="relative shrink-0">
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-xs font-bold shadow-[0_0_10px_rgba(139,92,246,0.2)]">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-xs font-bold shadow-[0_0_10px_rgba(139,92,246,0.2)]">
                                             {(user.displayName || user.username || "?").charAt(0).toUpperCase()}
                                         </div>
                                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-[#05030a] rounded-full" />
@@ -291,7 +311,7 @@ function CodeEditor() {
 
             {/* Sidebar Resizer */}
             <div
-                className={`w-1 cursor-col-resize transition-all z-20 shrink-0 ${activeDrag === "sidebar" ? "w-1.5 bg-violet-500/60" : "hover:w-1.5 hover:bg-violet-500/50"}`}
+                className={`w-1 cursor-col-resize transition-all z-20 shrink-0 ${activeDrag === "sidebar" ? "w-1.5 bg-emerald-500/60" : "hover:w-1.5 hover:bg-emerald-500/50"}`}
                 style={activeDrag === "sidebar" ? undefined : { backgroundColor: "rgba(255,255,255,0.05)" }}
                 onMouseDown={startSidebarDrag}
             />
@@ -305,7 +325,7 @@ function CodeEditor() {
                         <select
                             value={language}
                             onChange={handleLanguageChange}
-                            className="bg-white/5 border border-white/10 rounded-md px-3 py-1.5 text-sm text-white/80 hover:bg-white/10 transition-colors focus:outline-none focus:border-violet-500/50 appearance-none pr-8 cursor-pointer outline-none"
+                            className="bg-white/5 border border-white/10 rounded-md px-3 py-1.5 text-sm text-white/80 hover:bg-white/10 transition-colors focus:outline-none focus:border-emerald-500/50 appearance-none pr-8 cursor-pointer outline-none"
                             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 0.5rem center", backgroundSize: "1em" }}
                         >
                             <option value="java" className="bg-[#030108]">Java</option>
@@ -329,17 +349,46 @@ function CodeEditor() {
 
                     <div className="flex items-center gap-3">
                         <button
+                            onClick={handleDownload}
+                            className="flex items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 px-3 py-1 rounded-md text-xs font-medium transition-colors"
+                            title="Download local file"
+                        >
+                            <Download size={13} />
+                        </button>
+                        <button
                             onClick={() => saveCode(false)}
                             disabled={saveStatus === 'saving'}
-                            className="flex items-center gap-1.5 bg-violet-500/10 hover:bg-violet-500/20 disabled:opacity-60 disabled:cursor-not-allowed border border-violet-500/20 text-violet-400 px-3 py-1 rounded-full text-xs font-medium transition-colors"
+                            className="flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-medium transition-colors"
                             title="Save code to database"
                         >
                             {saveStatus === 'saving' ? (
-                                <><div className="w-3 h-3 border-2 border-violet-400/30 border-t-violet-400 rounded-full animate-spin" /> Saving...</>
+                                <><div className="w-3 h-3 border-2 border-emerald-400/30 border-t-emerald-400 rounded-full animate-spin" /> Saving...</>
                             ) : (
                                 <><Save size={13} /> Save</>
                             )}
                         </button>
+                        
+                        {/* New Features Dropdown/Toggle */}
+                        <div className="w-px h-5 bg-white/10 mx-1"></div>
+                        <button
+                            onClick={() => setShowAI(!showAI)}
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors border
+                                ${showAI ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400' : 'bg-white/5 hover:bg-white/10 border-white/10 text-white/80'}`
+                            }
+                            title="Toggle Gemini Assistant"
+                        >
+                            <Sparkles size={13} /> AI Assistant
+                        </button>
+                        <button
+                            onClick={() => setShowVideo(!showVideo)}
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors border
+                                ${showVideo ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400' : 'bg-white/5 hover:bg-white/10 border-white/10 text-white/80'}`
+                            }
+                            title="Toggle WebRTC Video"
+                        >
+                            <Video size={13} /> Video
+                        </button>
+
                         <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
                             <span className="text-emerald-500 text-xs font-medium tracking-wider">LIVE</span>
@@ -348,12 +397,13 @@ function CodeEditor() {
                 </div>
 
                 {/* Monaco Editor */}
-                <div className="flex-1 overflow-hidden border border-transparent hover:border-violet-500/40 focus-within:border-violet-500/70 focus-within:shadow-[0_0_0_1px_rgba(139,92,246,0.25)] transition-colors">
+                <div className="flex-1 overflow-hidden border border-transparent hover:border-emerald-500/40 focus-within:border-emerald-500/70 focus-within:shadow-[0_0_0_1px_rgba(139,92,246,0.25)] transition-colors">
                     <Editor
                         height="100%"
                         language={language}
                         value={code}
                         theme="vs-dark"
+                        onMount={(editor) => { editorRef.current = editor; }}
                         onChange={handleCodeChange}
                         options={{
                             minimap: { enabled: false },
@@ -369,7 +419,7 @@ function CodeEditor() {
 
                 {/* Console Resizer */}
                 <div
-                    className={`h-1 cursor-row-resize transition-all z-20 shrink-0 ${activeDrag === "console" ? "h-1.5 bg-violet-500/60" : "hover:h-1.5 hover:bg-violet-500/50"}`}
+                    className={`h-1 cursor-row-resize transition-all z-20 shrink-0 ${activeDrag === "console" ? "h-1.5 bg-emerald-500/60" : "hover:h-1.5 hover:bg-emerald-500/50"}`}
                     style={activeDrag === "console" ? undefined : { backgroundColor: "rgba(255,255,255,0.05)" }}
                     onMouseDown={startConsoleDrag}
                 />
@@ -416,6 +466,20 @@ function CodeEditor() {
                     </div>
                 </div>
             </div>
+
+            {/* AI Assistant Sidebar Panel */}
+            {showAI && (
+                <AIAssistant 
+                    onClose={() => setShowAI(false)} 
+                    currentCode={editorValue || editorRef.current?.getValue() || ''}
+                    language={language}
+                />
+            )}
+
+            {/* WebRTC Video Overlay */}
+            {showVideo && (
+                <VideoOverlay socket={socketRef.current} roomId={roomId} />
+            )}
         </div>
     );
 }

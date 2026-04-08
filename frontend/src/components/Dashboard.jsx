@@ -11,7 +11,6 @@ export const Dashboard = ({ user, onLogout }) => {
     const [agenda, setAgenda] = useState('');
     const [openFaqs, setOpenFaqs] = useState([]);
     const [error, setError] = useState('');
-    const [showGuestForm, setShowGuestForm] = useState(false);
 
     const faqs = [
         {
@@ -86,12 +85,12 @@ export const Dashboard = ({ user, onLogout }) => {
     };
 
     return (
-        <div className="min-h-screen text-white font-sans selection:bg-violet-500/30">
+        <div className="min-h-screen text-white font-sans selection:bg-emerald-500/30">
 
             {/* Navigation Bar */}
             <nav className="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto z-10 relative">
                 <div className="flex items-center gap-2">
-                    <div className="text-violet-500 font-mono text-xl font-bold mt-1">
+                    <div className="text-emerald-500 font-mono text-xl font-bold mt-1">
                         &lt;/&gt;
                     </div>
                     <span className="text-xl font-bold tracking-tight text-gradient">CollabCode</span>
@@ -111,7 +110,7 @@ export const Dashboard = ({ user, onLogout }) => {
                             </>
                         ) : (
                             <>
-                                <Lock size={16} className="text-white/40 group-hover:text-violet-400 transition-colors" />
+                                <Lock size={16} className="text-white/40 group-hover:text-emerald-400 transition-colors" />
                                 <span className="opacity-50">My Sessions</span>
                             </>
                         )}
@@ -127,7 +126,7 @@ export const Dashboard = ({ user, onLogout }) => {
                     <div className="pl-5 ml-1 border-l border-white/10 flex items-center">
                         {user ? (
                             <div className="relative group cursor-pointer">
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white font-bold shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] transition-all">
+                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-white font-bold shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] transition-all">
                                     {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                                 </div>
 
@@ -137,10 +136,8 @@ export const Dashboard = ({ user, onLogout }) => {
                                         <p className="text-sm font-medium truncate">{user.name || 'User'}</p>
                                         <p className="text-xs text-white/50 truncate">{user.email || 'user@colabcode.io'}</p>
                                     </div>
-                                    <button
-                                        onClick={onLogout}
-                                        className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors"
-                                    >
+                                    <button onClick={() => navigate('/about')} className="text-sm font-medium hover:text-emerald-400 transition-colors">About the Creator</button>
+                                    <button onClick={() => navigate('/sessions')} className="group flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
                                         Sign Out
                                     </button>
                                 </div>
@@ -165,8 +162,8 @@ export const Dashboard = ({ user, onLogout }) => {
                     {/* Left Column - Copy */}
                     <div className="space-y-8 relative z-10 animate-fade-in">
                         {/* Version Pill */}
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium">
-                            <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
                             v2.0 Now Public
                         </div>
 
@@ -192,71 +189,21 @@ export const Dashboard = ({ user, onLogout }) => {
                     {/* Right Column - Interactive Form */}
                     <div className="relative animate-fade-in delay-200">
                         {/* Decorative background glow */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-violet-600/15 rounded-full blur-[100px] pointer-events-none -z-10" />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-emerald-600/15 rounded-full blur-[100px] pointer-events-none -z-10" />
 
-                        {(!user && !showGuestForm) ? (
-                            <div className="glass-card p-8 md:p-10 border border-white/10 bg-[#05030a]/80 shadow-2xl relative z-10 overflow-hidden flex flex-col items-center text-center">
-                                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-400/30 to-transparent"></div>
-                                <div className="w-16 h-16 rounded-full bg-violet-500/10 flex flex-col items-center justify-center mb-6 text-violet-400 border border-violet-500/20 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
-                                    <Lock size={28} />
-                                </div>
-                                <h2 className="text-3xl font-bold mb-3 tracking-tight">Access Colab-Code</h2>
-                                <p className="text-white/50 text-base leading-relaxed mb-8 max-w-sm">
-                                    Sign in to save your sessions and invite collaborators, or jump right in as a guest.
-                                </p>
+                        <div className="glass-card p-8 md:p-10 border border-white/10 bg-[#05030a]/80 shadow-2xl relative z-10 overflow-hidden">
+                            {/* Decorative top reflection line */}
+                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent"></div>
 
-                                <div className="w-full flex gap-4">
-                                    <button
-                                        onClick={() => navigate('/signin')}
-                                        className="btn-primary flex-1 flex items-center justify-center gap-2"
-                                    >
-                                        Log In
-                                    </button>
-                                    <button
-                                        onClick={() => navigate('/signup')}
-                                        className="flex-1 flex items-center justify-center gap-2 text-white border border-white/10 bg-white/5 hover:bg-white/10 rounded-lg transition-all font-medium"
-                                    >
-                                        Sign Up
-                                    </button>
-                                </div>
-
-                                <div className="w-full flex items-center gap-4 my-8">
-                                    <div className="h-px flex-1 bg-white/10"></div>
-                                    <span className="text-xs text-white/30 font-bold uppercase tracking-widest">Or test it out</span>
-                                    <div className="h-px flex-1 bg-white/10"></div>
-                                </div>
-
-                                <button
-                                    onClick={() => setShowGuestForm(true)}
-                                    className="w-full flex items-center justify-center gap-2 text-white/50 hover:text-white transition-colors py-2"
-                                >
-                                    <Zap size={18} />
-                                    Continue as Guest
-                                    <ChevronRight size={16} />
-                                </button>
+                            <div className="mb-8">
+                                <h2 className="text-2xl font-bold mb-2">Initialize Workspace</h2>
+                                <p className="text-white/50 text-sm">Secure, ephemeral environments.</p>
+                                {error && (
+                                    <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                                        {error}
+                                    </div>
+                                )}
                             </div>
-                        ) : (
-                            <div className="glass-card p-8 md:p-10 border border-white/10 bg-[#05030a]/80 shadow-2xl relative z-10 overflow-hidden">
-                                {/* Decorative top reflection line */}
-                                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-400/30 to-transparent"></div>
-
-                                <div className="mb-8 relative">
-                                    {!user && showGuestForm && (
-                                        <button 
-                                            onClick={() => setShowGuestForm(false)}
-                                            className="absolute right-0 top-0 text-xs text-white/40 hover:text-white underline underline-offset-2"
-                                        >
-                                            Back to Login
-                                        </button>
-                                    )}
-                                    <h2 className="text-2xl font-bold mb-2">Initialize Workspace</h2>
-                                    <p className="text-white/50 text-sm">Secure, ephemeral environments.</p>
-                                    {error && (
-                                        <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                                            {error}
-                                        </div>
-                                    )}
-                                </div>
 
                             <form onSubmit={handleStartSession} className="space-y-5">
 
@@ -311,7 +258,7 @@ export const Dashboard = ({ user, onLogout }) => {
                                             <option value="cpp">C++</option>
                                             <option value="go">Go</option>
                                         </select>
-                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-violet-400/50">
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-400/50">
                                             <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>
@@ -342,7 +289,6 @@ export const Dashboard = ({ user, onLogout }) => {
 
                             </form>
                         </div>
-                        )}
                     </div>
                 </div>
             </main>
@@ -358,20 +304,20 @@ export const Dashboard = ({ user, onLogout }) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Feature 1 */}
                         <div className="glass-panel border-white/5 bg-white/[0.02] p-8 rounded-2xl hover:bg-white/[0.04] transition-colors relative group overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center mb-6 text-violet-400 relative z-10">
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-6 text-emerald-400 relative z-10">
                                 <Zap size={20} />
                             </div>
                             <h3 className="text-xl font-bold mb-3 relative z-10">WebSocket Real-time Sync</h3>
                             <p className="text-white/50 text-sm leading-relaxed relative z-10">
-                                Changes broadcasted in <span className="text-violet-300">sub-30ms</span>. Feels like local development.
+                                Changes broadcasted in <span className="text-emerald-300">sub-30ms</span>. Feels like local development.
                             </p>
                         </div>
 
                         {/* Feature 2 */}
                         <div className="glass-panel border-white/5 bg-white/[0.02] p-8 rounded-2xl hover:bg-white/[0.04] transition-colors relative group overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <div className="w-10 h-10 rounded-lg bg-fuchsia-500/10 flex items-center justify-center mb-6 text-fuchsia-400 relative z-10">
+                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-6 text-cyan-400 relative z-10">
                                 <Shield size={20} />
                             </div>
                             <h3 className="text-xl font-bold mb-3 relative z-10">Zero Persistence</h3>
@@ -382,8 +328,8 @@ export const Dashboard = ({ user, onLogout }) => {
 
                         {/* Feature 3 */}
                         <div className="glass-panel border-white/5 bg-white/[0.02] p-8 rounded-2xl hover:bg-white/[0.04] transition-colors relative group overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center mb-6 text-violet-400 relative z-10">
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-6 text-emerald-400 relative z-10">
                                 <Code size={20} />
                             </div>
                             <h3 className="text-xl font-bold mb-3 relative z-10">Monaco Engine</h3>
@@ -403,10 +349,10 @@ export const Dashboard = ({ user, onLogout }) => {
                     <div className="flex flex-col md:flex-row justify-between relative">
 
                         {/* Connecting Line */}
-                        <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent z-0"></div>
+                        <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent z-0"></div>
 
                         <div className="flex flex-col items-center text-center relative z-10 w-full md:w-1/3 px-4 mb-12 md:mb-0 group">
-                            <div className="w-14 h-14 rounded-full bg-[#111]/80 border border-violet-500/30 flex items-center justify-center text-violet-400 font-mono text-lg font-bold mb-6 shadow-[0_0_15px_rgba(139,92,246,0.2)] group-hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] group-hover:border-violet-400 transition-all backdrop-blur-sm">
+                            <div className="w-14 h-14 rounded-full bg-[#111]/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono text-lg font-bold mb-6 shadow-[0_0_15px_rgba(139,92,246,0.2)] group-hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] group-hover:border-emerald-400 transition-all backdrop-blur-sm">
                                 01
                             </div>
                             <h3 className="text-xl font-bold mb-2">Create</h3>
@@ -414,7 +360,7 @@ export const Dashboard = ({ user, onLogout }) => {
                         </div>
 
                         <div className="flex flex-col items-center text-center relative z-10 w-full md:w-1/3 px-4 mb-12 md:mb-0 group">
-                            <div className="w-14 h-14 rounded-full bg-[#111]/80 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 font-mono text-lg font-bold mb-6 shadow-[0_0_15px_rgba(217,70,239,0.2)] group-hover:shadow-[0_0_25px_rgba(217,70,239,0.4)] group-hover:border-fuchsia-400 transition-all backdrop-blur-sm">
+                            <div className="w-14 h-14 rounded-full bg-[#111]/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-mono text-lg font-bold mb-6 shadow-[0_0_15px_rgba(217,70,239,0.2)] group-hover:shadow-[0_0_25px_rgba(217,70,239,0.4)] group-hover:border-cyan-400 transition-all backdrop-blur-sm">
                                 02
                             </div>
                             <h3 className="text-xl font-bold mb-2">Share</h3>
@@ -422,7 +368,7 @@ export const Dashboard = ({ user, onLogout }) => {
                         </div>
 
                         <div className="flex flex-col items-center text-center relative z-10 w-full md:w-1/3 px-4 group">
-                            <div className="w-14 h-14 rounded-full bg-[#111]/80 border border-violet-500/30 flex items-center justify-center text-violet-400 font-mono text-lg font-bold mb-6 shadow-[0_0_15px_rgba(139,92,246,0.2)] group-hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] group-hover:border-violet-400 transition-all backdrop-blur-sm">
+                            <div className="w-14 h-14 rounded-full bg-[#111]/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-mono text-lg font-bold mb-6 shadow-[0_0_15px_rgba(139,92,246,0.2)] group-hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] group-hover:border-emerald-400 transition-all backdrop-blur-sm">
                                 03
                             </div>
                             <h3 className="text-xl font-bold mb-2">Code</h3>
@@ -445,7 +391,7 @@ export const Dashboard = ({ user, onLogout }) => {
                                     className="w-full py-6 flex justify-between items-center cursor-pointer hover:text-white/80 transition-colors"
                                 >
                                     <span className="font-medium text-left">{faq.q}</span>
-                                    <span className={`text-white/40 group-hover:text-violet-400 transition-all duration-300 text-xl font-light ${openFaqs.includes(i) ? 'rotate-45 text-violet-400' : ''}`}>
+                                    <span className={`text-white/40 group-hover:text-emerald-400 transition-all duration-300 text-xl font-light ${openFaqs.includes(i) ? 'rotate-45 text-emerald-400' : ''}`}>
                                         +
                                     </span>
                                 </button>
@@ -464,15 +410,15 @@ export const Dashboard = ({ user, onLogout }) => {
             <footer className="py-12 border-t border-white/10 text-sm">
                 <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-white/40">
                     <div className="flex items-center gap-2">
-                        <div className="text-violet-500 font-mono font-bold mt-0.5">&lt;/&gt;</div>
+                        <div className="text-emerald-500 font-mono font-bold mt-0.5">&lt;/&gt;</div>
                         <span className="font-bold text-white tracking-wide">CollabCode</span>
                     </div>
 
                     <span>© 2026 Dinesh. Open Source.</span>
 
                     <div className="flex gap-6">
-                        <a href="https://github.com/DineshDumka/" className="hover:text-violet-400 transition-colors" target="_blank" >GitHub</a>
-                        <a href="https://www.linkedin.com/in/DineshDumka/" className="hover:text-violet-400 transition-colors" target="_blank">LinkedIn</a>
+                        <a href="https://github.com/DineshDumka/" className="hover:text-emerald-400 transition-colors" target="_blank" >GitHub</a>
+                        <a href="https://www.linkedin.com/in/DineshDumka/" className="hover:text-emerald-400 transition-colors" target="_blank">LinkedIn</a>
                     </div>
                 </div>
             </footer>

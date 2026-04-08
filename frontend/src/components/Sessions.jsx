@@ -70,14 +70,14 @@ function SessionCard({ session, showCreatedAt, onClick }) {
             className={`group flex items-center justify-between gap-4 p-4 rounded-xl border transition-all duration-200
         ${isDisabled
                     ? 'bg-white/[0.02] border-white/5 opacity-50 cursor-default'
-                    : 'bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] hover:border-violet-500/30 cursor-pointer'
+                    : 'bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] hover:border-emerald-500/30 cursor-pointer'
                 }`}
         >
             {/* Left */}
             <div className="flex items-center gap-4 min-w-0">
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0
-          ${isDisabled ? 'bg-white/5' : 'bg-violet-500/10 group-hover:bg-violet-500/20 transition-colors'}`}>
-                    <Code2 size={16} className={isDisabled ? 'text-white/30' : 'text-violet-400'} />
+          ${isDisabled ? 'bg-white/5' : 'bg-emerald-500/10 group-hover:bg-emerald-500/20 transition-colors'}`}>
+                    <Code2 size={16} className={isDisabled ? 'text-white/30' : 'text-emerald-400'} />
                 </div>
                 <div className="min-w-0">
                     <p className="text-sm font-semibold text-white/90 truncate">
@@ -112,7 +112,7 @@ function SessionCard({ session, showCreatedAt, onClick }) {
                     </div>
                 )}
                 {!isDisabled && (
-                    <ArrowRight size={15} className="text-white/20 group-hover:text-violet-400 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight size={15} className="text-white/20 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
                 )}
             </div>
         </div>
@@ -179,7 +179,7 @@ export const Sessions = ({ user }) => {
             <div className="min-h-screen flex flex-col items-center justify-center text-white/40 gap-4 bg-[#030108]">
                 <AlertCircle size={32} />
                 <p className="text-sm">You must be signed in to view your sessions.</p>
-                <button onClick={() => navigate('/signin')} className="text-xs text-violet-400 hover:underline">
+                <button onClick={() => navigate('/signin')} className="text-xs text-emerald-400 hover:underline">
                     Sign In
                 </button>
             </div>
@@ -225,7 +225,7 @@ export const Sessions = ({ user }) => {
                 {/* Recent Sessions */}
                 <section>
                     <div className="flex items-center gap-2 mb-4">
-                        <History size={15} className="text-violet-400" />
+                        <History size={15} className="text-emerald-400" />
                         <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Recent</h2>
                         <span className="ml-auto text-xs text-white/30">{recentSessions.length} shown</span>
                     </div>
@@ -257,7 +257,7 @@ export const Sessions = ({ user }) => {
                 {/* Created Sessions */}
                 <section>
                     <div className="flex items-center gap-2 mb-4">
-                        <Layers size={15} className="text-violet-400" />
+                        <Layers size={15} className="text-emerald-400" />
                         <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Created by You</h2>
                         <span className="ml-auto text-xs text-white/30">{createdSessions.length} total</span>
                     </div>

@@ -5,6 +5,7 @@ import { Dashboard } from './components/Dashboard';
 import { Auth } from './components/Auth';
 import { Sessions } from './components/Sessions';
 import CodeEditor from './components/CodeEditor';
+import { About } from './components/About';
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -33,6 +34,7 @@ function App() {
       <Route path="/signin" element={<Auth onLogin={handleLogin} />} />
       <Route path="/signup" element={<Auth onLogin={handleLogin} />} />
       <Route path="/sessions" element={<Sessions user={user} />} />
+      <Route path="/about" element={<About />} />
     </Routes>
   );
 }

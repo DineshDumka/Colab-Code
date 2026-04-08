@@ -67,9 +67,28 @@ Colab-Code/
 - **MongoDB** (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
 - **JDoodle API keys** ([sign up here](https://www.jdoodle.com/compiler-api))
 
-### 1. Clone the repository
+### Setup & Installation
 
-```bash
+You can run this project locally either through Docker (Recommended) or standard NPM.
+
+#### Method 1: Docker (Recommended)
+This spins up MongoDB, the backend, and the served frontend instantly.
+
+1. Ensure **Docker** and **Docker Compose** are installed.
+2. In the root directory, create a `.env` file for the backend if you want AI to work:
+   ```bash
+   GEMINI_API_KEY=your_gemini_key_here
+   ```
+3. Run the complete stack:
+   ```bash
+   docker-compose up -d --build
+   ```
+4. Access the application at `http://localhost`.
+
+#### Method 2: Standard NPM
+
+1.  **Clone the repository:**
+    ```bash
 git clone https://github.com/DineshDumka/Colab-Code.git
 cd Colab-Code
 ```
@@ -133,4 +152,4 @@ This project is open source under the [MIT License](LICENSE).
 **Dinesh**
 
 - GitHub: [@Dinesh](https://github.com/DineshDumka)
-- LinkedIn: [Dinesh](https://www.linkedin.com/in/DineshDumka/)
+- LinkedIn: [Dinesh](https://www.linkedin.com/in/dinesh-dumka/)
